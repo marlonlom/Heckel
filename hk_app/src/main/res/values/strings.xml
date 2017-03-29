@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Heckel</string>
+    <string name="example_image_url">http://www.belatrixsf.com/img/Belatrix.png</string>
+    <string name="textview_demo">Heckel image loading demo!</string>
+</resources>

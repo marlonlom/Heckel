@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Heckel</string>
+    <string name="demo_error_text">Error loading the image</string>
+</resources>
