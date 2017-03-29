@@ -11,6 +11,8 @@ import com.github.marlonlom.heckel.Heckel;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -53,7 +55,11 @@ public final class ImageDownloadAsyncTask extends AsyncTask<String, Void, Bitmap
             if (params.length == 0) {
                 throw new Exception("Image url must be set.");
             }
-            final Bitmap downloadedBitmap = downloadBitmap(params[0]);
+            final String imageUrl = params[0];
+            if (!hasImageExtensions(imageUrl)) {
+                throw new Exception("Url not related to an image.");
+            }
+            final Bitmap downloadedBitmap = downloadBitmap(imageUrl);
             if (downloadedBitmap != null) {
                 final String generatedId = String.format(Locale.getDefault(), "%d",
                         downloadedBitmap.getGenerationId());
@@ -64,6 +70,18 @@ public final class ImageDownloadAsyncTask extends AsyncTask<String, Void, Bitmap
             Log.e(Heckel.class.getSimpleName(), "Error Executing the async operation", exception);
         }
         return null;
+    }
+
+    /**
+     * Checks if the url finish with an image valid extension.
+     *
+     * @param imageUrl the image url to check.
+     * @return true/false
+     */
+    private boolean hasImageExtensions(final String imageUrl) {
+        final List<String> imageTypes = Arrays.asList("jpg", "jpeg", "png", "gif");
+        final String imageExtension = imageUrl.substring(imageUrl.length() - 3, imageUrl.length());
+        return imageTypes.contains(imageExtension);
     }
 
     /**

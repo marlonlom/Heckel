@@ -1,6 +1,7 @@
 package com.github.marlonlom.heckel;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -13,8 +14,14 @@ import com.github.marlonlom.heckel.net.ImageDownloadAsyncTask;
  */
 public final class Heckel {
 
-    public static Builder load(final String url) {
-        return (Builder) new Builder().load(url);
+    /**
+     * Initializes the builder instance.
+     *
+     * @param imageView imageview instance
+     * @return the builder instance
+     */
+    public static Builder with(ImageView imageView) {
+        return (Builder) new Builder().with(imageView);
     }
 
     /**
@@ -22,14 +29,14 @@ public final class Heckel {
      *
      * @author marlonlom
      */
-    interface IWithImageUrl {
+    interface IWithImageView {
 
         /**
-         * prepares the imageview for receive the downloaded image.
+         * Downloads the image.
          *
-         * @param imageView the image view widget
+         * @param imageUrl the image url
          */
-        void into(final ImageView imageView);
+        void load(final String imageUrl);
     }
 
     /**
@@ -37,34 +44,41 @@ public final class Heckel {
      *
      * @author marlonlom
      */
-    public static class Builder implements IWithImageUrl {
+    public static class Builder implements IWithImageView {
         private final ImageDownloadAsyncTask mImageDownloadTask;
-        private String mImageUrl;
+
 
         private Builder() {
             this.mImageDownloadTask = new ImageDownloadAsyncTask();
         }
 
-        public IWithImageUrl load(final String url) {
-            this.mImageUrl = url;
-            return this;
+        @Override
+        public void load(final String imageUrl) {
+            this.mImageDownloadTask.execute(imageUrl);
         }
 
-        @Override
-        public void into(final ImageView imageView) {
-            this.mImageDownloadTask.setListener(
-                    new ImageDownloadAsyncTask.ImageDownloadedListener() {
-                        @Override
-                        public void onImageDownloaded(Bitmap imageContents) {
-                            if (imageContents != null) {
-                                imageView.setImageBitmap(imageContents);
-                            } else {
-                                Toast.makeText(imageView.getContext(), R.string.demo_error_text,
-                                        Toast.LENGTH_LONG).show();
+        public IWithImageView with(final ImageView imageView) {
+            try {
+                if (imageView == null) {
+                    throw new Exception("No ImageView defined");
+                }
+                this.mImageDownloadTask.setListener(
+                        new ImageDownloadAsyncTask.ImageDownloadedListener() {
+                            @Override
+                            public void onImageDownloaded(Bitmap imageContents) {
+                                if (imageContents != null) {
+                                    imageView.setImageBitmap(imageContents);
+                                } else {
+                                    Toast.makeText(imageView.getContext(), R.string.demo_error_text,
+                                            Toast.LENGTH_LONG).show();
+                                }
                             }
-                        }
-                    });
-            this.mImageDownloadTask.execute(this.mImageUrl);
+                        });
+            } catch (final Exception exception) {
+                Log.e(Heckel.class.getSimpleName(), exception.getMessage(), exception);
+            }
+            return this;
+
         }
     }
 }
