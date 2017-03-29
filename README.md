@@ -37,7 +37,7 @@ final ImageView mDemoImageView = (ImageView) findViewById(R.id.imageview_demo);
 final String imageUrl = "-image url here-";
 /* TLDR additionally, you can use resource string id for getting the image url.*/
 
-Heckel.load(imageUrl).into(mDemoImageView);
+Heckel.with(mDemoImageView).load(imageUrl);
 
 ```
 
