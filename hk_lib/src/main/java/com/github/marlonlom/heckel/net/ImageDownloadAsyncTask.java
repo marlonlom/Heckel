@@ -49,12 +49,19 @@ public final class ImageDownloadAsyncTask extends AsyncTask<String, Void, Bitmap
 
     @Override
     protected Bitmap doInBackground(String... params) {
-        final Bitmap downloadedBitmap = downloadBitmap(params[0]);
-        if (downloadedBitmap != null) {
-            final String generatedId = String.format(Locale.getDefault(), "%d",
-                    downloadedBitmap.getGenerationId());
-            mBitmapLruCache.addBitmap(generatedId, downloadedBitmap);
-            return mBitmapLruCache.getBitmap(generatedId);
+        try {
+            if (params.length == 0) {
+                throw new Exception("Image url must be set.");
+            }
+            final Bitmap downloadedBitmap = downloadBitmap(params[0]);
+            if (downloadedBitmap != null) {
+                final String generatedId = String.format(Locale.getDefault(), "%d",
+                        downloadedBitmap.getGenerationId());
+                mBitmapLruCache.addBitmap(generatedId, downloadedBitmap);
+                return mBitmapLruCache.getBitmap(generatedId);
+            }
+        } catch (final Exception exception) {
+            Log.e(Heckel.class.getSimpleName(), "Error Executing the async operation", exception);
         }
         return null;
     }
