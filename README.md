@@ -1,6 +1,12 @@
 # Heckel
 Simple image loader library for android.
 
+## History:
+
+*Heckel* stands for [_Erich Heckel_](https://en.wikipedia.org/wiki/Erich_Heckel) (31 July 1883 in Döbeln – 27 January 1970 in Radolfzell). he was a German painter and printmaker. 
+
+
+
 ## Usage:
 
 ### Import as a dependency:
